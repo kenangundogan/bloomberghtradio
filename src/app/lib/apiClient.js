@@ -1,14 +1,24 @@
 import axios from 'axios';
 
 const getBaseURL = () => {
-  // Server-side rendering için absolute URL kullan
-  if (typeof window === 'undefined') {
-    // Genel API base URL - tüm platformlar için
-    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api';
+  // Browser'da relative URL kullan
+  if (typeof window !== 'undefined') {
+    return '/api';
   }
   
-  // Client-side için relative URL kullan
-  return '/api';
+  // Server-side için absolute URL
+  // Environment variable öncelikli
+  if (process.env.NEXT_PUBLIC_API_BASE_URL) {
+    return process.env.NEXT_PUBLIC_API_BASE_URL;
+  }
+  
+  // Vercel otomatik URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}/api`;
+  }
+  
+  // Localhost fallback
+  return 'http://localhost:3000/api';
 };
 
 const instance = axios.create({
@@ -31,7 +41,6 @@ const apiClient = async (url, options = {}) => {
   const { method = 'GET', params, data, headers, ...rest } = options;
   
   try {
-    // URL'nin doğru formatlandığından emin ol
     const cleanUrl = url.startsWith('/') ? url : `/${url}`;
     
     const response = await instance.request({
