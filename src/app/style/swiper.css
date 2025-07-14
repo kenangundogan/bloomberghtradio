@@ -1,0 +1,23 @@
+.SwiperContainer {
+
+    .swiper-pagination {
+        position: relative;
+    }
+
+    .swiper-pagination-bullet {
+        @apply w-2.5 h-2.5;
+
+        &.swiper-pagination-bullet-active {
+            @apply bg-black;
+        }
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+        @apply bg-white text-black w-10 h-10 rounded-full;
+
+        &::after {
+            @apply text-sm;
+        }
+    }
+}
